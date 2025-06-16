@@ -1,1 +1,252 @@
+/*
+    THE FRACTURE | style.css
+    Minimalist base styling. The true styling resides in the WebGL shaders and JS transformations.
+    Focuses on stark contrast and hints of underlying chaos.
+*/
 
+:root {
+    --color-primary-red: #FF0000; /* Pure aggressive red */
+    --color-dark-void: #000000; /* Deep black */
+    --color-light-static: #FFFFFF; /* White for temporary highlights */
+    --color-text-alpha: rgba(255, 0, 0, 0.7); /* Translucent red text */
+    --font-cyber: 'Electrolize', sans-serif; /* Placeholder, will use generic sans-serif */
+    --glitch-animation-duration: 0.1s;
+    --glitch-offset: 5px;
+}
+
+/* Base and Resets */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden; /* Prevent horizontal scroll due to transitions */
+    overflow-y: auto; /* Allow scrolling for content triggers */
+    font-family: var(--font-cyber), monospace;
+    background-color: var(--color-dark-void);
+    color: var(--color-light-static);
+    overscroll-behavior: contain; /* Prevents bounce scroll on mobile for better control */
+    user-select: none; /* Emphasize UI control */
+}
+
+/* Hide scrollbar */
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+/* Main Canvas */
+#fractureCanvas {
+    position: fixed; /* Fixes canvas to viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: 1; /* Below UI, above body background */
+}
+
+/* UI Overlay - for Title, Instructions, Sound Toggle */
+.ui-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10; /* Above canvas */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5vh 5vw;
+    pointer-events: none; /* Allow interaction with canvas beneath by default */
+    background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 10%, transparent 90%, rgba(0,0,0,0.4) 100%);
+    opacity: 1;
+    transition: opacity 1s ease-out;
+}
+
+.ui-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+
+.main-title {
+    font-size: clamp(3rem, 10vw, 7rem); /* Responsive font size */
+    font-weight: 700;
+    color: var(--color-primary-red);
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 0, 0, 0.5);
+    margin-top: 10vh; /* Push down from top slightly */
+    letter-spacing: 0.05em;
+    animation: textFlicker 2s infinite alternate ease-in-out;
+    pointer-events: all; /* Make title clickable */
+    cursor: default; /* Remove pointer for effect */
+    user-select: none;
+    line-height: 1;
+}
+
+.subtitle {
+    font-size: clamp(0.8rem, 2.5vw, 1.8rem);
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: -1em; /* Pull closer to title */
+    pointer-events: all;
+    user-select: none;
+    letter-spacing: 0.1em;
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 5vh;
+    font-size: clamp(0.9rem, 2vw, 1.2rem);
+    color: var(--color-light-static);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: all;
+    user-select: none;
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+    animation: pulse 2s infinite ease-in-out;
+}
+.scroll-indicator i {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    margin-bottom: 5px;
+    animation: bounce 2s infinite;
+}
+
+.sound-toggle {
+    position: absolute;
+    top: 3vh;
+    right: 3vw;
+    font-size: clamp(0.8rem, 2vw, 1.2rem);
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    pointer-events: all; /* Important for clicking */
+    transition: color 0.3s ease;
+}
+.sound-toggle i {
+    margin-right: 5px;
+    color: var(--color-primary-red); /* Highlight icon */
+    transition: color 0.3s ease;
+}
+.sound-toggle:hover {
+    color: var(--color-light-static);
+}
+.sound-toggle:hover i {
+    color: var(--color-light-static);
+}
+
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--color-dark-void);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: var(--color-primary-red);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    z-index: 1000;
+    transition: opacity 1s ease-out, visibility 1s linear;
+}
+
+.loading-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loading-text {
+    position: relative;
+    padding: 20px;
+    background-color: rgba(255,0,0,0.1);
+    border: 1px solid var(--color-primary-red);
+    box-shadow: 0 0 15px var(--color-primary-red);
+    animation: flickerLight 0.5s infinite alternate;
+}
+.loading-text span {
+    font-size: 2em;
+    display: block;
+    margin-top: 10px;
+    color: white;
+}
+.glitch-line {
+    width: 150px;
+    height: 3px;
+    background-color: var(--color-primary-red);
+    margin-top: 20px;
+    animation: loadingBar 2s infinite alternate, glitchLine 1.5s infinite linear;
+    transform: scaleX(0.2);
+    transform-origin: left;
+}
+
+/* Keyframe Animations for Anarchy UI */
+@keyframes textFlicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        text-shadow: 0 0 10px var(--color-primary-red), 0 0 20px var(--color-primary-red), 0 0 40px rgba(255,0,0,0.5);
+        color: var(--color-light-static);
+    }
+    20%, 24%, 55% {
+        text-shadow: none;
+        color: rgba(255, 255, 255, 0.6);
+    }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.8; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes flickerLight {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        box-shadow: 0 0 15px var(--color-primary-red);
+        background-color: rgba(255,0,0,0.1);
+    }
+    20%, 24%, 54%, 56% {
+        box-shadow: none;
+        background-color: transparent;
+    }
+}
+
+@keyframes loadingBar {
+    0% { transform: scaleX(0.2); }
+    100% { transform: scaleX(1); }
+}
+
+@keyframes glitchLine {
+    0% {
+        transform: translate(-5px, 0);
+    }
+    25% {
+        transform: translate(5px, -2px);
+    }
+    50% {
+        transform: translate(-3px, 2px);
+    }
+    75% {
+        transform: translate(7px, -1px);
+    }
+    100% {
+        transform: translate(-5px, 0);
+    }
+}
+
+/* Font Awesome (pre-fetching if not using local SVG) */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
