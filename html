@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="THE FRACTURE: A surrealist, cinematic, glitchcore web experience exposing the undercurrents of Silicon Valley. Total Anarchy. I see red.">
+    <meta name="keywords" content="Anarchy, Red, Silicon Valley, Glitch, Surrealism, WebGL, Three.js, Generative Art, Cyberpunk, Dali, Escher, Immersive, Sound-driven, Scroll-based, Cursor-reactive, Psychopolitics, Control, Exposure, Digital Art">
+    <meta name="author" content="Your Name/Alias (The Architect)">
+
+    <title>THE FRACTURE: Silicon Valley's Red Glitch</title>
+
+    <!-- Favicon (A subtle warning signal) -->
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+
+    <!-- Preload critical assets for immediate chaos -->
+    <link rel="preload" href="assets/audio/ambient_drone.mp3" as="audio" type="audio/mpeg" crossorigin="anonymous">
+    <link rel="preload" href="assets/audio/static_burst.mp3" as="audio" type="audio/mpeg" crossorigin="anonymous">
+    <link rel="preload" href="assets/textures/glitch_pattern.jpg" as="image">
+
+    <!-- Three.js (The engine of hallucination) -->
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.165.0/three.min.js"></script>
+    <!-- Howler.js (The voice of the void) -->
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js"></script>
+    <!-- GSAP (The choreographer of chaos) -->
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <!-- Main Stylesheet (The initial calm before the storm) -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-text">ACCESSING...<br><span id="progress-percent">0%</span></div>
+        <div class="glitch-line"></div>
+    </div>
+
+    <canvas id="fractureCanvas"></canvas>
+
+    <!-- UI Overlay for interaction instructions/title/scroll indicator - will be minimal -->
+    <div class="ui-overlay">
+        <h1 class="main-title">THE FRACTURE</h1>
+        <p class="subtitle">SCROLL TO UNMASK REALITY</p>
+        <div class="scroll-indicator"><i class="fas fa-chevron-down"></i> SCROLL</div>
+        <div class="sound-toggle" id="soundToggle">
+            <i class="fas fa-volume-up"></i>
+            <span class="sound-status">Sound ON</span>
+        </div>
+    </div>
+
+    <!-- Hidden audio elements - managed by Howler.js -->
+    <audio id="ambientAudio" src="assets/audio/ambient_drone.mp3" loop></audio>
+    <audio id="glitchAudio" src="assets/audio/static_burst.mp3"></audio>
+
+
+    <!-- Module Scripts (The instruction sets for chaos) -->
+    <script src="src/utilities.js"></script>
+    <script type="module" src="src/three-setup.js"></script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
